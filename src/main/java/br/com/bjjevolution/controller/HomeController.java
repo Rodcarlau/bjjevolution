@@ -16,16 +16,11 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/perfil")
-    public String perfil(Model model, @AuthenticationPrincipal OAuth2User user) {
-        model.addAttribute("nome", user.getAttribute("name"));
-        model.addAttribute("email", user.getAttribute("email"));
-    return "perfil";
-}
-       
-    @GetMapping("/area-logada")
-    public String restrito() {
-        return "restrito"; // página protegida por login
+    @GetMapping("/usuario")
+    public String usuario(Model model, @AuthenticationPrincipal OAuth2User principal) {
+        model.addAttribute("nome", principal.getAttribute("name"));
+        return "usuario";
     }
+       
 
 }
