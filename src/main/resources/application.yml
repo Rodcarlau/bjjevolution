@@ -9,4 +9,20 @@ spring:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
-    
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 476142290122-fcqr0ngmtuth592cslqmq7vp4egjhq8f.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - openid
+              - profile
+              - email
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://www.googleapis.com/oauth2/v4/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
