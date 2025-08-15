@@ -1,44 +1,37 @@
 package br.com.bjjevolution.security;
 
-import java.io.IOException;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf.disable()) // Desabilita CSRF pra APIs REST
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/","/login","/css/**").permitAll()
+                .requestMatchers("/public/**", "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .oauth2Login(oauth2 -> oauth2.successHandler(customSuccessHandler())); // Ativa login com OAuth2 (Google, GitHub etc.)
+            .oauth2Login(oauth2 -> oauth2.successHandler(customSuccessHandler()));
+
         return http.build();
     }
 
     @Bean
     public AuthenticationSuccessHandler customSuccessHandler() {
-        return new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest request,
-                                                HttpServletResponse response,
-                                                org.springframework.security.core.Authentication authentication)
-                                                throws IOException, ServletException {
-                response.sendRedirect("/area-logada"); // Aqui define pra onde redireciona
-            }
+        return (request, response, authentication) -> {
+            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+
+            // Aqui você poderia gerar um JWT e enviar para o Angular
+             String token = JwtUtil.generateToken(oAuth2User.getAttribute("email"));
+
+            response.sendRedirect("http://localhost:4200/login-success?token=" + token);
         };
     }
 }
