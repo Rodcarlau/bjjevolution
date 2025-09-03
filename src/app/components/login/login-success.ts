@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-success',
-  template: `<p>Login realizado com sucesso!</p>`
+  template: `<p>Carregando login...</p>`
 })
 export class LoginSuccessComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router) {}
@@ -13,7 +13,7 @@ export class LoginSuccessComponent implements OnInit {
       const token = params['token'];
       if (token) {
         localStorage.setItem('token', token);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/home']);
       }
     });
   }

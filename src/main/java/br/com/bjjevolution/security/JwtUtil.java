@@ -18,4 +18,8 @@ public class JwtUtil {
                 .signWith(key)
                 .compact();
     }
+
+    public static Key getKey() {
+        return key;
+    }
 }
